@@ -21,7 +21,6 @@ const { Header: AntHeader, Content, Sider } = Layout;
 
 function Main({ children }) {
   const [visible, setVisible] = useState(false);
-  const [placement, setPlacement] = useState("right");
   const [sidenavColor, setSidenavColor] = useState("#1890ff");
   const [sidenavType, setSidenavType] = useState("transparent");
   const [fixed, setFixed] = useState(false);
@@ -34,14 +33,6 @@ function Main({ children }) {
   let { pathname } = useLocation();
   pathname = pathname.replace("/", "");
 
-  useEffect(() => {
-    if (pathname === "rtl") {
-      setPlacement("left");
-    } else {
-      setPlacement("right");
-    }
-  }, [pathname]);
-
   return (
     <Layout
       className={`layout-dashboard ${
@@ -50,11 +41,11 @@ function Main({ children }) {
     >
       <Drawer
         title={false}
-        placement={placement === "right" ? "left" : "right"}
+        placement={"left"}
         closable={false}
         onClose={() => setVisible(false)}
         visible={visible}
-        key={placement === "right" ? "left" : "right"}
+        key={"left"}
         width={250}
         className={`drawer-sidebar ${
           pathname === "rtl" ? "drawer-sidebar-rtl" : ""

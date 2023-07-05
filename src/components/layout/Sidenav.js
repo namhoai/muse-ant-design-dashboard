@@ -42,7 +42,7 @@ function Sidenav({ color }) {
     </svg>,
   ];
 
-  const tables = [
+  const workspaces = [
     <svg
       width="20"
       height="20"
@@ -64,7 +64,7 @@ function Sidenav({ color }) {
     </svg>,
   ];
 
-  const billing = [
+  const users = [
     <svg
       width="20"
       height="20"
@@ -86,7 +86,7 @@ function Sidenav({ color }) {
     </svg>,
   ];
 
-  const rtl = [
+  const dns = [
     <svg
       width="20"
       height="20"
@@ -164,7 +164,7 @@ function Sidenav({ color }) {
     <>
       <div className="brand">
         <img src={logo} alt="" />
-        <span>Muse Dashboard</span>
+        <span>FMON Dashboard</span>
       </div>
       <hr />
       <Menu theme="light" mode="inline">
@@ -182,90 +182,45 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
         <Menu.Item key="2">
-          <NavLink to="/tables">
+          <NavLink to="/workspaces">
             <span
               className="icon"
               style={{
-                background: page === "tables" ? color : "",
+                background: page === "workspaces" ? color : "",
               }}
             >
-              {tables}
+              {workspaces}
             </span>
-            <span className="label">Tables</span>
+          <span className="label">Workspaces</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="3">
-          <NavLink to="/billing">
+          <NavLink to="/users">
             <span
               className="icon"
               style={{
-                background: page === "billing" ? color : "",
+                background: page === "users" ? color : "",
               }}
             >
-              {billing}
+              {users}
             </span>
-            <span className="label">Billing</span>
+            <span className="label">Users</span>
           </NavLink>
         </Menu.Item>
         <Menu.Item key="4">
-          <NavLink to="/rtl">
+          <NavLink to="/dns">
             <span
               className="icon"
               style={{
-                background: page === "rtl" ? color : "",
+                background: page === "dns" ? color : "",
               }}
             >
-              {rtl}
+              {dns}
             </span>
-            <span className="label">RTL</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item className="menu-item-header" key="5">
-          Account Pages
-        </Menu.Item>
-        <Menu.Item key="6">
-          <NavLink to="/profile">
-            <span
-              className="icon"
-              style={{
-                background: page === "profile" ? color : "",
-              }}
-            >
-              {profile}
-            </span>
-            <span className="label">Profile</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="7">
-          <NavLink to="/sign-in">
-            <span className="icon">{signin}</span>
-            <span className="label">Sign In</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="8">
-          <NavLink to="/sign-up">
-            <span className="icon">{signup}</span>
-            <span className="label">Sign Up</span>
+            <span className="label">DNS</span>
           </NavLink>
         </Menu.Item>
       </Menu>
-      <div className="aside-footer">
-        <div
-          className="footer-box"
-          style={{
-            background: color,
-          }}
-        >
-          <span className="icon" style={{ color }}>
-            {dashboard}
-          </span>
-          <h6>Need Help?</h6>
-          <p>Please check our docs</p>
-          <Button type="primary" className="ant-btn-sm ant-btn-block">
-            DOCUMENTATION
-          </Button>
-        </div>
-      </div>
     </>
   );
 }
