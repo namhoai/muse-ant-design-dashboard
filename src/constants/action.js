@@ -1,0 +1,9 @@
+export default {
+  ADD: 'ADD',
+  EDIT: 'EDIT',
+  DELETE: 'DELETE',
+  DELETE_ALL: 'DELETE_ALL',
+  VIEW: 'VIEW',
+  SELECTED: 'SELECTED',
+  LOGOUT: 'LOGOUT'
+};

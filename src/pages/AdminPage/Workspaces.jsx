@@ -9,14 +9,6 @@ function Workspaces() {
     setStatus(e.target.value)
   };
 
-  useEffect(() => {
-    callAPIGetWorkspace()
-  }, []);
-
-  const callAPIGetWorkspace = () => {
-    
-  }
-
   return (
     <>
       <div className="tabled">

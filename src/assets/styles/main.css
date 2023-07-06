@@ -2150,9 +2150,6 @@ body {
   margin: auto;
   display: block;
 }
-.layout-signin {
-  background: #fff;
-}
 .layout-signin footer.ant-layout-footer svg {
   width: 18px;
   height: 18px;
