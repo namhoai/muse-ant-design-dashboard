@@ -6,17 +6,17 @@ import { useAuth } from '@hooks/useAuth';
 // Constant
 import { REDIRECT_URL, URL_AUTH_API } from '@configs/env';
 
-function LoginPage() {
+function LoginSSOPage() {
   const { token } = useAuth();
   const location = useLocation();
 
   if (!token) {
-    window.location = `${URL_AUTH_API}/auth/login?redirect=${REDIRECT_URL}/rececive`;
+    window.location = `${URL_AUTH_API}/login?redirect=${REDIRECT_URL}/rececive`;
   } else {
-    return <Navigate to="/admin" replace state={{ from: location }} />;
+    return <Navigate to="/admin/home" replace state={{ from: location }} />;
   }
 
   return null;
 }
 
-export default LoginPage;
+export default LoginSSOPage;

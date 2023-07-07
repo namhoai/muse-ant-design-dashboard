@@ -19,7 +19,7 @@ const AuthProvider = (props) => {
 
   React.useEffect(() => {
     if (isLogin) {
-      const origin = location.state?.from?.pathname || '/admin/trang-chu';
+      const origin = location.state?.from?.pathname || '/admin/home';
       navigate(origin);
     }
   }, [isLogin]);

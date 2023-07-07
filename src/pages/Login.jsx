@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Layout,
   Menu,
@@ -16,6 +16,8 @@ const { Content } = Layout;
 
 const SignIn = () => {
   
+  const navigate = useNavigate();
+
   const onChange = (checked) => {
     console.log(`switch to ${checked}`);
   }
@@ -99,9 +101,10 @@ const SignIn = () => {
 
                   <Form.Item>
                   <Button
-                    htmlType="submit"
                     style={{ width: "100%" }}
-                    onClick={() => {redirect("/login_sso")}}
+                    onClick={() => {
+                      navigate("/login_sso");
+                    }}
                   >
                     SIGN IN WITH FPT ID
                   </Button>

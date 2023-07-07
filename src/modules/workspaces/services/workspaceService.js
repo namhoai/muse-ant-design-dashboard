@@ -1,32 +1,13 @@
-import { URL_BASE_API } from '@configs/env';
+import { useQuery } from '@tanstack/react-query';
 import request from '@utils/baseAPI/WrapperApi';
+import { URL_BASE_API } from '@configs/env';
+import { getUrlPaging } from '@utils/urls';
 
-export const getListWorkspace = () => {
-  return request({
-    url: `${URL_BASE_API}/workspaces`,
-    method: 'GET'
-  });
-};
+export const getWorkspaces = (page = 1, pageSize = 9999) => {
+  const url = getUrlPaging(`${URL_BASE_API}/workspaces`, page, pageSize);
+  const { data, isLoading, refetch } = useQuery(['get-workspaces', page, pageSize], () =>
+    request({ url })
+  );
 
-export const getWorkspace = (workspaceId) => {
-  return request({
-    url: `${URL_BASE_API}/workspaces/${workspaceId}`,
-    method: 'GET'
-  });
-};
-
-export const deleteWorkspace = (workspaceId) => {
-  return request({
-    url: `${URL_BASE_API}/workspaces/${workspaceId}`,
-    method: 'DELETE'
-  });
-};
-
-// Create a workspace anonymos
-export const createWorkspace = (data) => {
-  return request({
-    url: `${URL_BASE_API}/workspaces`,
-    method: 'POST',
-    data
-  });
+  return { data: data?.data, isLoading, refetch };
 };

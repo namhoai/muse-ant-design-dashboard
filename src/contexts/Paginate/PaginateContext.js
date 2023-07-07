@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { parseStringParamsToJson } from '@utils/urls';
 import { useSearchParams } from 'react-router-dom';
 
 export const PaginateContext = React.createContext(true);
@@ -45,12 +44,12 @@ function PaginateProvider(props) {
       onChangePaginationParam();
   }, [page, pageSize]);
 
-  const handleChangePage = (event, newPage) => {
-    onChangePaginationParam(newPage + 1, pageSize);
+  const handleChangePage = (newPage) => {
+    onChangePaginationParam(newPage, pageSize);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    const perPage = parseInt(event.target.value, 10);
+  const handleChangeRowsPerPage = (pageSize) => {
+    const perPage = parseInt(pageSize, 10);
     onChangePaginationParam(1, perPage);
   };
 

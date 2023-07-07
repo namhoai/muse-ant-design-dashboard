@@ -11,12 +11,13 @@ import DashboardLayout from '@layouts/Main';
 // Pages
 import ReceiveToken from '@pages/ReceiveToken';
 import LoginPage from '@pages/Login';
-import LoginPageSSO from '@pages/Login';
+import LoginPageSSO from '@pages/LoginSSO';
 import NotFound from '@pages/Page404';
 
 import DashboardApp from '@pages/AdminPage/Home';
 
-import Workspaces from '@pages/AdminPage/Workspaces';
+import Workspaces from '@pages/AdminPage/Workspace/Workspaces';
+import WorkspacesDetail from '@pages/AdminPage/Workspace/WorkspacesDetail';
 
 // ----------------------------------------------------------------------
 
@@ -44,7 +45,7 @@ export default function Router() {
         { path: 'home', element: <DashboardApp /> },
         // class
         { path: 'workspaces', element: <Workspaces /> },
-        { path: 'workspaces/detail', element: <Workspaces /> },
+        { path: 'workspaces/:workspaceId', element: <WorkspacesDetail /> },
         // { path: 'users', element: <CTrinhHoc /> },
         // { path: 'users/detail', element: <CTrinhHoc /> },
       ]
