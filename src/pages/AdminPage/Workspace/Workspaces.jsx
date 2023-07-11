@@ -1,25 +1,39 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from 'react';
 import { compose } from 'redux';
-import { Row, Col, Card, Radio, Table, Tag, Pagination } from "antd";
+import { Row, Col, Card, Radio, Table, Tag, Pagination, Input, Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
+import { trim } from 'lodash';
+import moment from 'moment';
+
 import { usePagination, withPaginate, PaginateContext } from '@contexts/Paginate/PaginateContext';
-import { getWorkspaces } from "@modules/workspaces/services/workspaceService";
-import { Link } from "react-router-dom";
-import { trim } from "lodash";
+import { getWorkspaces } from '@modules/workspaces/services/workspaceService';
 
-
-// Images
+const { Search } = Input;
 
 function Workspaces() {
   const { page, pageSize } = usePagination();
   const { handleChangePage, handleChangeRowsPerPage } = useContext(PaginateContext);
-  const [status, setStatus] = useState('b')
-  const { data, isLoading, refetch, error, isSuccess } = getWorkspaces(page, pageSize);
+  const [status, setStatus] = useState('b');
+  const [textSearch, setTextSearch] = useState('');
+
+  const { data, isLoading, refetch, error, isSuccess } = getWorkspaces(page, pageSize, textSearch);
 
   const onChange = (e) => {
-    setStatus(e.target.value)
+    setStatus(e.target.value);
   };
 
-  console.log('data', data);
+  const onSearch = (event) => {
+    setTextSearch(event.target.value);
+  };
+
+  useEffect(() => {
+    const getWs = setTimeout(() => {
+      handleChangePage(1);
+      refetch();
+    }, 500);
+
+    return () => clearTimeout(getWs);
+  }, [textSearch]);
 
   const columns = [
     {
@@ -31,7 +45,7 @@ function Workspaces() {
     {
       title: 'namespace',
       dataIndex: 'namespace',
-      key: 'namespace',
+      key: 'namespace'
     },
     {
       title: 'package_alias',
@@ -39,13 +53,13 @@ function Workspaces() {
       key: 'package_alias',
       render: (package_alias) => {
         let color = '#B2BABB';
-        switch(trim(package_alias)) {
+        switch (trim(package_alias)) {
           case 'TRIAL':
             color = '#EC7063';
-            break
+            break;
           case 'PRO':
             color = '#5DADE2';
-            break
+            break;
           case 'ADVANCED':
             color = '#52BE80';
         }
@@ -55,23 +69,44 @@ function Workspaces() {
             {package_alias.toUpperCase()}
           </Tag>
         );
-      },
+      }
     },
     {
       title: 'tenant_id',
       dataIndex: 'tenant_id',
-      key: 'tenant_id',
+      key: 'tenant_id'
     },
     {
       title: 'vpc_id',
       dataIndex: 'vpc_id',
-      key: 'vpc_id',
+      key: 'vpc_id'
     },
     {
       title: 'created_at',
       dataIndex: 'created_at',
       key: 'created_at',
+      render: (created_at) => {
+        const timeago = moment(created_at).fromNow();
+        return (
+          <Tooltip title={created_at}>
+            <span>{timeago}</span>
+          </Tooltip>
+        );
+      }
     },
+    {
+      title: 'updated_at',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
+      render: (updated_at) => {
+        const timeago = moment(updated_at).fromNow();
+        return (
+          <Tooltip title={updated_at}>
+            <span>{timeago}</span>
+          </Tooltip>
+        );
+      }
+    }
   ];
 
   return (
@@ -82,7 +117,18 @@ function Workspaces() {
             <Card
               bordered={false}
               className="criclebox tablespace mb-24"
-              title="Workspace management"
+              title={
+                <div>
+                  <Input
+                    placeholder="Search by namespace or tenant"
+                    onChange={onSearch}
+                    enterButton={undefined}
+                    allowClear
+                    size="small"
+                    style={{ width: 300 }}
+                  />
+                </div>
+              }
               extra={
                 <>
                   <Radio.Group onChange={onChange} value={status}>
@@ -90,8 +136,7 @@ function Workspaces() {
                     <Radio.Button value="b">Active</Radio.Button>
                   </Radio.Group>
                 </>
-              }
-            >
+              }>
               <div className="table-responsive">
                 <Table
                   loading={isLoading}
@@ -101,21 +146,27 @@ function Workspaces() {
                   className="ant-border-space"
                 />
               </div>
-              <div style={{padding: 20, textAlign: "right"}}>
+              <div style={{ padding: 20, textAlign: 'right' }}>
                 <Pagination
-                    responsive={true}
-                    pageSize={pageSize}
-                    current={page}
-                    pageSizeOptions={[10, 25]}
-                    total={data?.pagination?.total}
-                    onChange={(pageLocal, pageSizeLocal) => {
-                      debugger;
-                      if (pageSizeLocal !== pageSize) {
-                        handleChangeRowsPerPage(pageSizeLocal);
-                      } else {
-                        handleChangePage(pageLocal);
-                      }
-                    }}
+                  responsive={true}
+                  pageSize={pageSize}
+                  current={page}
+                  pageSizeOptions={[10, 25]}
+                  total={data?.pagination?.total}
+                  onChange={(pageLocal, pageSizeLocal) => {
+                    if (pageSizeLocal !== pageSize) {
+                      handleChangeRowsPerPage(pageSizeLocal);
+                    } else {
+                      handleChangePage(pageLocal);
+                    }
+                  }}
+                  showTotal={(total) => (
+                    <span>
+                      Total 	&nbsp;
+                      <b>{total}</b>
+                      &nbsp; workspaces
+                    </span>
+                  )}
                 />
               </div>
             </Card>

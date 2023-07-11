@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate, useLocation } from "react-router-dom";
 import {
   Layout,
   Menu,
@@ -11,11 +11,19 @@ import {
   Input,
   Switch,
 } from "antd";
+import { useAuth } from '@hooks/useAuth';
+
 const { Title } = Typography;
 const { Content } = Layout;
 
 const SignIn = () => {
-  
+  const { token } = useAuth();
+  const location = useLocation();
+
+  if (token) {
+    return <Navigate to="/admin/home" replace state={{ from: location }} />;
+  }
+
   const navigate = useNavigate();
 
   const onChange = (checked) => {

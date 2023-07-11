@@ -36,7 +36,7 @@ const getFefreshToken = (config) => {
   const user = loadFromLocalStorageObjectFromBase64(contantAuthentication.DATA_AUTH);
   return axios({
     method: 'post',
-    url: `${URL_AUTH_API}/auth/token/refresh`,
+    url: `${URL_AUTH_API}/token/refresh`,
     data: {
       refresh_token: user.refresh_token
     },
