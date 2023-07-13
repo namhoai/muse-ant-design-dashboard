@@ -1,5 +1,5 @@
-import { Row, Col, Card, Statistic, Button, List, Descriptions, Avatar } from 'antd';
-
+import { Row, Col, Card, Statistic, Button, List, Descriptions, Avatar, Tag } from 'antd';
+import { useParams } from 'react-router-dom';
 import { PlusOutlined, ExclamationOutlined } from '@ant-design/icons';
 import mastercard from '@assets/images/mastercard-logo.png';
 import paypal from '@assets/images/paypal-logo-2.png';
@@ -14,36 +14,15 @@ import {
   calender,
   mins
 } from '@assets/icons';
-import { getWorkspaceById } from '../../../modules/workspaces/services/workspaceService';
+import { getWorkspaceById } from '@modules/workspaces/services/workspaceService';
+import InfoFrame from '@components/InfoFrame';
+import Loading from '@components/Loading';
+import StatusWorkspace from '@components/StatusWorkspace';
+import { PACKAGE_TEXT } from '@constants/workspace';
+import DatasourcesItem from '@components/DatasourceItem';
 
-function WorkspacesDetail({workspaceId}) {
-  const dataUser = [
-    {
-      title: 'March, 01, 2021',
-      description: '#MS-415646',
-      amount: '$180'
-    },
-    {
-      title: 'February, 12, 2021',
-      description: '#RV-126749',
-      amount: '$250'
-    },
-    {
-      title: 'April, 05, 2020',
-      description: '#FB-212562',
-      amount: '$550'
-    },
-    {
-      title: 'June, 25, 2019',
-      description: '#QW-103578',
-      amount: '$400'
-    },
-    {
-      title: 'March, 03, 2019',
-      description: '#AR-803481',
-      amount: '$700'
-    }
-  ];
+function WorkspacesDetail() {
+  const { workspaceId } = useParams();
 
   const newest = [
     {
@@ -102,6 +81,14 @@ function WorkspacesDetail({workspaceId}) {
 
   const { data, isLoading, refetch, error, isSuccess } = getWorkspaceById(workspaceId);
 
+  const workspace = data?.data?.workspace;
+  const users = data?.data?.users || [];
+  const datasources = data?.data?.datasource || [];
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <Row gutter={[24, 0]}>
@@ -112,23 +99,37 @@ function WorkspacesDetail({workspaceId}) {
                 className="header-solid h-full ant-card-p-0"
                 title={<h6 className="font-semibold m-0">Workspace information</h6>}>
                 <Row gutter={[24, 0]}>
-                  <Col span={24} md={12}>
-                    <Card className="payment-method-card">
-                      <img src={mastercard} alt="mastercard" />
-                      <h6 className="card-number">**** **** **** 7362</h6>
-                      <Button type="link" className="ant-edit-link">
-                        {pencil}
-                      </Button>
-                    </Card>
+                  <Col span={24} md={8}>
+                    <InfoFrame label="id" value={workspace?.id} />
                   </Col>
-                  <Col span={24} md={12}>
-                    <Card className="payment-method-card">
-                      <img src={visa} alt="visa" />
-                      <h6 className="card-number">**** **** **** 3288</h6>
-                      <Button type="link" className="ant-edit-link">
-                        {pencil}
-                      </Button>
-                    </Card>
+                  <Col span={24} md={8}>
+                    <InfoFrame label="region_id" value={workspace?.region_id} />
+                  </Col>
+                  <Col span={24} md={8}>
+                    <InfoFrame label="tenant_id" value={workspace?.tenant_id} />
+                  </Col>
+                  <Col span={24} md={8}>
+                    <InfoFrame label="trans_id" value={workspace?.trans_id} />
+                  </Col>
+                  <Col span={24} md={8}>
+                    <InfoFrame label="vpc_id" value={workspace?.vpc_id} />
+                  </Col>
+                  <Col span={24} md={8}>
+                    <InfoFrame
+                      showCopy={false}
+                      label="package_id"
+                      value={<Tag color="red">{PACKAGE_TEXT[`${workspace?.package_id}`]}</Tag>}
+                    />
+                  </Col>
+                  <Col span={24} md={8}>
+                    <InfoFrame
+                      label="status"
+                      showCopy={false}
+                      value={<StatusWorkspace status={workspace?.status} />}
+                    />
+                  </Col>
+                  <Col span={24} md={8}>
+                    <InfoFrame label="error_code" value={workspace?.error_code} />
                   </Col>
                 </Row>
               </Card>
@@ -145,40 +146,17 @@ function WorkspacesDetail({workspaceId}) {
                     <h6 className="font-semibold m-0">Datasources</h6>
                   </Col>
                   <Col xs={24} md={12} className="d-flex">
-                    <Button disabled type="primary">Create datasource</Button>
+                    <Button disabled type="primary">
+                      Create datasource
+                    </Button>
                   </Col>
                 </Row>
               </>
             }
             bodyStyle={{ paddingTop: '0' }}>
             <Row gutter={[24, 24]}>
-              {information.map((i, index) => (
-                <Col span={24} key={index}>
-                  <Card className="card-billing-info" bordered="false">
-                    <div className="col-info">
-                      <Descriptions title="Oliver Liam">
-                        <Descriptions.Item label="Company Name" span={3}>
-                          Viking Burrito
-                        </Descriptions.Item>
-
-                        <Descriptions.Item label="Email Address" span={3}>
-                          oliver@burrito.com
-                        </Descriptions.Item>
-                        <Descriptions.Item label="VAT Number" span={3}>
-                          FRB1235476
-                        </Descriptions.Item>
-                      </Descriptions>
-                    </div>
-                    <div className="col-action">
-                      <Button type="link" danger>
-                        {deletebtn}DELETE
-                      </Button>
-                      <Button type="link" className="darkbtn">
-                        {pencil} EDIT
-                      </Button>
-                    </div>
-                  </Card>
-                </Col>
+              {datasources.map((item) => (
+                <DatasourcesItem data={item} key={item.id} />
               ))}
             </Row>
           </Card>
@@ -187,16 +165,15 @@ function WorkspacesDetail({workspaceId}) {
           <Card
             bordered={false}
             className="header-solid h-full ant-invoice-card"
-            title={[<h6 className="font-semibold m-0">Users</h6>]}
-            >
+            title={[<h6 className="font-semibold m-0">Users</h6>]}>
             <List
               itemLayout="horizontal"
               className="invoice-list"
-              dataSource={dataUser}
+              dataSource={users}
               renderItem={(item) => (
-                <List.Item actions={[<Button type="link">{download} PDF</Button>]}>
-                  <List.Item.Meta title={item.title} description={item.description} />
-                  <div className="amount">{item.amount}</div>
+                <List.Item style={{opacity: item?.isDisabled ? 0.5 : 1}} actions={[<Button type="link">{deletebtn} Delete</Button>]}>
+                  <List.Item.Meta title={item?.email} description={item?.bss_user_id} />
+                  <div className="amount">{item?.role}</div>
                 </List.Item>
               )}
             />

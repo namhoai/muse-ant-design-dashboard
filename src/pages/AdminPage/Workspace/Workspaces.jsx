@@ -1,24 +1,34 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { compose } from 'redux';
-import { Row, Col, Card, Radio, Table, Tag, Pagination, Input, Tooltip } from 'antd';
+import { Row, Col, Card, Radio, Table, Tag, Pagination, Input, Tooltip, Select } from 'antd';
 import { Link } from 'react-router-dom';
 import { trim } from 'lodash';
 import moment from 'moment';
 
 import { usePagination, withPaginate, PaginateContext } from '@contexts/Paginate/PaginateContext';
 import { getWorkspaces } from '@modules/workspaces/services/workspaceService';
-
-const { Search } = Input;
+import StatusWorkspace from '@components/StatusWorkspace';
+import { LIST_STATUS_TYPE_ACTIVE, LIST_STATUS_TYPE, STATUS_TYPE } from '@constants/workspace';
 
 function Workspaces() {
   const { page, pageSize } = usePagination();
   const { handleChangePage, handleChangeRowsPerPage } = useContext(PaginateContext);
-  const [status, setStatus] = useState('b');
+  const [status, setStatus] = useState('all');  
+  const [packageType, setPackageType] = useState('all');
   const [textSearch, setTextSearch] = useState('');
+  const [disabledPackageType, setDisabledPackageType] = useState(false);
+  const [statusList, setStatusList] = useState(LIST_STATUS_TYPE_ACTIVE);
 
-  const { data, isLoading, refetch, error, isSuccess } = getWorkspaces(page, pageSize, textSearch);
+  const { data, isLoading, refetch, isRefetching } = getWorkspaces(page, pageSize, textSearch, status === 'expired', packageType, statusList);
 
   const onChange = (e) => {
+    if (e.target.value === 'expired') {
+      setPackageType("TRIAL");
+      setDisabledPackageType(true)
+    } else {
+      setPackageType("all");
+      setDisabledPackageType(false)
+    }
     setStatus(e.target.value);
   };
 
@@ -33,7 +43,7 @@ function Workspaces() {
     }, 500);
 
     return () => clearTimeout(getWs);
-  }, [textSearch]);
+  }, [textSearch, status, packageType, statusList]);
 
   const columns = [
     {
@@ -95,19 +105,75 @@ function Workspaces() {
       }
     },
     {
-      title: 'updated_at',
-      dataIndex: 'updated_at',
-      key: 'updated_at',
-      render: (updated_at) => {
-        const timeago = moment(updated_at).fromNow();
-        return (
-          <Tooltip title={updated_at}>
-            <span>{timeago}</span>
-          </Tooltip>
-        );
+      title: 'status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => {
+        return <StatusWorkspace status={status} />;
       }
     }
   ];
+
+  const optionStatus = [
+    {
+      value: 'All',
+      label: 'All (Create*, Delete*, Update*)'
+    },
+    {
+      value: 'Active',
+      label: 'Workspace Active (Created, Deleting, Delete fail, Update*)'
+    },
+    {
+      value: STATUS_TYPE.CREATING,
+      label: 'creating'
+    },
+    {
+      value: STATUS_TYPE.CREATED,
+      label: 'created'
+    },
+    {
+      value: STATUS_TYPE.CREATE_FAIL,
+      label: 'create fail'
+    },
+    {
+      value: STATUS_TYPE.DELETING,
+      label: 'deleting'
+    },
+    {
+      value: STATUS_TYPE.DELETED,
+      label: 'deleted'
+    },
+    {
+      value: STATUS_TYPE.DELETE_FAIL,
+      label: 'deleted fail'
+    },
+    {
+      value: STATUS_TYPE.UPDATING,
+      label: 'updating'
+    },
+    {
+      value: STATUS_TYPE.UPDATED,
+      label: 'updated'
+    },
+    {
+      value: STATUS_TYPE.UPDATE_FAIL,
+      label: 'update fail'
+    }
+  ];
+
+  const handleChangeStatus = (value) => {
+    if (value.includes('All')) {
+      setStatusList(LIST_STATUS_TYPE);
+    } else if (value.includes('Active')) {
+      setStatusList(LIST_STATUS_TYPE_ACTIVE);
+    } else {
+      setStatusList(value);
+    }
+  };
+
+  const handleChangePackageType = (value) => {
+    setPackageType(value)
+  }
 
   return (
     <>
@@ -122,24 +188,51 @@ function Workspaces() {
                   <Input
                     placeholder="Search by namespace or tenant"
                     onChange={onSearch}
-                    enterButton={undefined}
                     allowClear
-                    size="small"
+                    autoFocus
                     style={{ width: 300 }}
                   />
                 </div>
               }
               extra={
                 <>
-                  <Radio.Group onChange={onChange} value={status}>
-                    <Radio.Button value="a">All</Radio.Button>
-                    <Radio.Button value="b">Active</Radio.Button>
-                  </Radio.Group>
+                  <Row gutter={[24, 0]}>
+                    <Col>
+                      <Select
+                        mode="multiple"
+                        placeholder="Filter status"
+                        value={statusList}
+                        onChange={handleChangeStatus}
+                        style={{ width: '100%', minWidth: '500px' }}
+                        options={optionStatus}
+                      />
+                    </Col>
+                    <Col>
+                      <Select
+                        value={packageType}
+                        disabled={disabledPackageType}
+                        style={{ width: 180 }}
+                        onChange={handleChangePackageType}
+                        options={[
+                          { value: 'all', label: 'All - package' },
+                          { value: 'TRIAL', label: 'TRIAL - package' },
+                          { value: 'PRO', label: 'PRO - package' },
+                          { value: 'ADVANCED', label: 'ADVANCED - package' }
+                        ]}
+                      />
+                    </Col>
+                    <Col>
+                      <Radio.Group onChange={onChange} value={status}>
+                        <Radio.Button value="all">All</Radio.Button>
+                        <Radio.Button value="expired">Expired</Radio.Button>
+                      </Radio.Group>
+                    </Col>
+                  </Row>
                 </>
               }>
               <div className="table-responsive">
                 <Table
-                  loading={isLoading}
+                  loading={isLoading | isRefetching}
                   columns={columns}
                   dataSource={data?.data}
                   pagination={false}
@@ -162,7 +255,7 @@ function Workspaces() {
                   }}
                   showTotal={(total) => (
                     <span>
-                      Total 	&nbsp;
+                      Total &nbsp;
                       <b>{total}</b>
                       &nbsp; workspaces
                     </span>
