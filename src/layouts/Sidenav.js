@@ -1,7 +1,7 @@
 // import { useState } from "react";
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
-import logo from "@assets/images/logo.png";
+import logo from "@assets/images/icon-logo.png";
 import { dashboard, dns, users, workspaces } from "../assets/icons";
 
 function Sidenav({ color }) {
@@ -21,12 +21,12 @@ function Sidenav({ color }) {
       label: 'Workspaces',
       icon: workspaces(color),
     },
-    {
-      id: 'users',
-      link: '/admin/users',
-      label: 'Users',
-      icon: users(color),
-    },
+    // {
+    //   id: 'users',
+    //   link: '/admin/users',
+    //   label: 'Users',
+    //   icon: users(color),
+    // },
     {
       id: 'dns',
       link: '/admin/dns',
@@ -38,7 +38,7 @@ function Sidenav({ color }) {
   return (
     <>
       <div className="brand">
-        <img src={logo} alt="" />
+        <img height={25} src={logo} alt="" />
         <span>FMON Dashboard</span>
       </div>
       <hr />

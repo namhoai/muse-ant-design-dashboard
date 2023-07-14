@@ -3,7 +3,7 @@ import request from '@utils/baseAPI/WrapperApi';
 import { URL_BASE_API } from '@configs/env';
 import { getUrlPaging } from '@utils/urls';
 
-export const getWorkspaces = (page = 1, pageSize = 9999, textSearch = '', expired, packageType, statusList) => {
+export const getWorkspaces = (page = 1, pageSize = 10, textSearch = '', expired, packageType, statusList) => {
   const url = `${getUrlPaging(`${URL_BASE_API}/workspaces`, page, pageSize)}&text=${textSearch}&expired=${expired}&package_alias=${packageType}&status=${statusList}`;
   const { data, isLoading, isRefetching, refetch } = useQuery(['get-workspaces', page, pageSize], () =>
     request({ url })

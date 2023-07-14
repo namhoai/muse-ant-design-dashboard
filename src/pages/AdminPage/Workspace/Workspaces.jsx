@@ -232,7 +232,7 @@ function Workspaces() {
               }>
               <div className="table-responsive">
                 <Table
-                  loading={isLoading | isRefetching}
+                  loading={isRefetching || isLoading}
                   columns={columns}
                   dataSource={data?.data}
                   pagination={false}

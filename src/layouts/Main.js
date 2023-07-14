@@ -23,40 +23,8 @@ function Main() {
 
   return (
     <Layout
-      className={`layout-dashboard ${
-        pathname === "profile" ? "layout-profile" : ""
-      } ${pathname === "rtl" ? "layout-dashboard-rtl" : ""}`}
+      className={`layout-dashboard ${pathname === "profile" ? "layout-profile" : ""}`}
     >
-      <Drawer
-        title={false}
-        placement={"left"}
-        closable={false}
-        onClose={() => setVisible(false)}
-        visible={visible}
-        key={"left"}
-        width={250}
-        className={`drawer-sidebar ${
-          pathname === "rtl" ? "drawer-sidebar-rtl" : ""
-        } `}
-      >
-        <Layout
-          className={`layout-dashboard ${
-            pathname === "rtl" ? "layout-dashboard-rtl" : ""
-          }`}
-        >
-          <Sider
-            trigger={null}
-            width={250}
-            theme="light"
-            className={`sider-primary ant-layout-sider-primary ${
-              sidenavType === "#fff" ? "active-route" : ""
-            }`}
-            style={{ background: sidenavType }}
-          >
-            <Sidenav color={sidenavColor} />
-          </Sider>
-        </Layout>
-      </Drawer>
       <Sider
         breakpoint="lg"
         collapsedWidth="0"
@@ -66,9 +34,7 @@ function Main() {
         trigger={null}
         width={250}
         theme="light"
-        className={`sider-primary ant-layout-sider-primary ${
-          sidenavType === "#fff" ? "active-route" : ""
-        }`}
+        className={`sider-primary ant-layout-sider-primary ${sidenavType === "#fff" ? "active-route" : ""}`}
         style={{ background: sidenavType }}
       >
         <Sidenav color={sidenavColor} />

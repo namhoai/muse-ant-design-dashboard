@@ -18,6 +18,7 @@ import DashboardApp from '@pages/AdminPage/Home';
 
 import Workspaces from '@pages/AdminPage/Workspace/Workspaces';
 import WorkspacesDetail from '@pages/AdminPage/Workspace/WorkspacesDetail';
+import DNS from '@pages/AdminPage/DNS';
 
 // ----------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ export default function Router() {
         { path: 'workspaces', element: <Workspaces /> },
         { path: 'workspaces/:workspaceId', element: <WorkspacesDetail /> },
         // { path: 'users', element: <CTrinhHoc /> },
-        // { path: 'users/detail', element: <CTrinhHoc /> },
+        { path: 'dns', element: <DNS /> },
       ]
     },
     // Page: Redirect revice info from SSO.
